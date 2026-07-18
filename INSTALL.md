@@ -4,23 +4,45 @@ This package is intended for a Composer-managed TYPO3 v14 installation (not the 
 
 ## Option A — Via Git (recommended, one command after initial setup)
 
-The package is published at [github.com/musayazlik/ai-content-generator](https://github.com/musayazlik/ai-content-generator) (public repository).
+The package is published at [github.com/musayazlik/ai-content-generator](https://github.com/musayazlik/ai-content-generator) (public repository). Since it's not on Packagist, Composer needs a `repositories` entry to know where to find it — **this is a one-time setup per project.**
 
-Add this to your project's **root** `composer.json`:
+**If your root `composer.json` does not have a `repositories` key yet**, add:
 
 ```json
-"repositories": [
-  {
+"repositories": {
+  "ai-content-generator": {
     "type": "vcs",
     "url": "https://github.com/musayazlik/ai-content-generator.git"
   }
-]
+}
+```
+
+**If it already has one** (common in existing TYPO3 projects, e.g. a `path` repository for local extensions), just add `ai-content-generator` as a new key inside the existing object:
+
+```json
+"repositories": {
+  "packages": {
+    "type": "path",
+    "url": "./packages/*"
+  },
+  "ai-content-generator": {
+    "type": "vcs",
+    "url": "https://github.com/musayazlik/ai-content-generator.git"
+  }
+}
 ```
 
 Then install with a single command:
 
 ```bash
 composer require musayazlik/ai-content-generator
+```
+
+Skipping the `repositories` step results in:
+```
+Could not find a matching version of package musayazlik/ai-content-generator.
+Check the package spelling, your version constraint and that the package
+is available in a stability which matches your minimum-stability (stable).
 ```
 
 Since the repository is public, no authentication token is required. To update to a newer release later:

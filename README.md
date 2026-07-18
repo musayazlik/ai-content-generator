@@ -13,13 +13,27 @@ AI-powered content generator extension for TYPO3 v14. Adds an "AI" button to eve
 
 ## Installation
 
-See **[INSTALL.md](INSTALL.md)** for detailed composer-mode installation steps. In short:
+This package is **not on Packagist**, so Composer needs to be told where to find it first. Add this to your project's root `composer.json` — if you already have a `repositories` key, just add `ai-content-generator` as a new entry inside it:
+
+```json
+"repositories": {
+  "ai-content-generator": {
+    "type": "vcs",
+    "url": "https://github.com/musayazlik/ai-content-generator.git"
+  }
+}
+```
+
+Then install:
 
 ```bash
 composer require musayazlik/ai-content-generator
 ```
 
-(If distributed via a private VCS/path repository, follow the repository setup steps in `INSTALL.md` first.)
+Skipping the `repositories` step causes:
+`Could not find a matching version of package musayazlik/ai-content-generator...`
+
+See **[INSTALL.md](INSTALL.md)** for the full guide (including an offline/zip option).
 
 ### Configuration
 
