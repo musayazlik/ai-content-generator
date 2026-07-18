@@ -2,7 +2,7 @@
   "name": "musayazlik/ai-content-generator",
   "description": "AI-powered content generator for TYPO3 v14 content elements",
   "type": "typo3-cms-extension",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "license": [
     "GPL-2.0-or-later"
   ],
