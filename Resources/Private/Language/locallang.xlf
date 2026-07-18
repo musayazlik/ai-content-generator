@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="locallang">
+        <body>
+            <trans-unit id="ai.generate.button">
+                <source>AI Generate</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.title">
+                <source>AI Content Generator</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.fields.title">
+                <source>Fields to Fill</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.fields.description">
+                <source>Select the fields you want AI to generate content for:</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.prompt.title">
+                <source>Content Instruction</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.prompt.description">
+                <source>Describe what content you want to generate:</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.prompt.placeholder">
+                <source>E.g.: Write a compelling promotional text for this product. Target audience is small and medium-sized businesses.</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.results.title">
+                <source>Generated Content</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.results.description">
+                <source>You can edit the content before saving. Click "Fill" to save to the element.</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.button.generate">
+                <source>Generate Content</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.button.fill">
+                <source>Fill</source>
+            </trans-unit>
+            <trans-unit id="ai.modal.button.close">
+                <source>Close</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.loading">
+                <source>Loading fields...</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.generating">
+                <source>Generating content with AI...</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.success">
+                <source>Content generated successfully!</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.saved">
+                <source>Content saved! Reloading page...</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.error">
+                <source>An error occurred</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.no_fields">
+                <source>No generatable fields found for this content element.</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.no_prompt">
+                <source>Please enter a content instruction.</source>
+            </trans-unit>
+            <trans-unit id="ai.notification.no_fields_selected">
+                <source>Please select at least one field.</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

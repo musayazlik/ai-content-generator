@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  MusaYazlik\AiContentGenerator\:
+    resource: "../Classes/*"
+
+  MusaYazlik\AiContentGenerator\Controller\SettingsModuleController:
+    public: true
+
+  MusaYazlik\AiContentGenerator\Controller\AiContentGeneratorController:
+    public: true

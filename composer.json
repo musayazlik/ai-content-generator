@@ -1,0 +1,36 @@
+{
+  "name": "musayazlik/ai-content-generator",
+  "description": "AI-powered content generator for TYPO3 v14 content elements",
+  "type": "typo3-cms-extension",
+  "version": "1.0.0",
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "authors": [
+    {
+      "name": "Musa Yazlık",
+      "email": "info@musayazlik.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "typo3/cms-core": "^14.3.0",
+    "typo3/cms-backend": "^14.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MusaYazlik\\AiContentGenerator\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MusaYazlik\\AiContentGenerator\\Tests\\": "Tests"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "ai_content_generator"
+    }
+  }
+}

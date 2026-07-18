@@ -1,0 +1,14 @@
+# Build artifacts
+/Build/
+/node_modules/
+
+# IDE
+/.idea/
+/.vscode/
+/.claude/
+
+# OS
+.DS_Store
+
+# Tests
+/Tests/Unit/Coverage/
