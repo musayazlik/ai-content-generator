@@ -156,7 +156,7 @@ function bindEditFormButton() {
       if (uid > 0) {
         openAiModal(uid);
       } else {
-        Notification.warning('Uyarı', 'Kayıt kaydedildikten sonra AI kullanılabilir.', 5);
+        Notification.warning('Warning', 'AI can be used after the record has been saved.', 5);
       }
     });
   });
@@ -237,7 +237,7 @@ function createAiButton(uid) {
   const button = document.createElement('button');
   button.className = `btn btn-default btn-sm ${BUTTON_CLASS}`;
   button.setAttribute('data-uid', uid);
-  button.setAttribute('title', 'AI ile içerik oluştur');
+  button.setAttribute('title', 'Generate content with AI');
   button.type = 'button';
 
   // Add icon (loaded asynchronously)
@@ -282,7 +282,7 @@ function observePageChanges() {
  */
 async function openAiModal(uid) {
   // Step 1: Fetch fields for this content element
-  Notification.info('Yükleniyor', 'İçerik elementi alanları alınıyor...', 2);
+  Notification.info('Loading', 'Fetching content element fields...', 2);
 
   try {
     const fieldsResponse = await new AjaxRequest(TYPO3.settings.ajaxUrls.ai_content_generator_get_fields)
@@ -291,18 +291,18 @@ async function openAiModal(uid) {
     const fieldsData = await fieldsResponse.resolve();
 
     if (fieldsData.error) {
-      Notification.error('Hata', fieldsData.error, 5);
+      Notification.error('Error', fieldsData.error, 5);
       return;
     }
 
     if (!fieldsData.fields || fieldsData.fields.length === 0) {
-      Notification.warning('Uyarı', 'Bu içerik elementi için AI ile doldurulabilir alan bulunamadı.', 5);
+      Notification.warning('Warning', 'No AI-fillable fields were found for this content element.', 5);
       return;
     }
 
     showGenerationModal(uid, fieldsData.fields, fieldsData.cType);
   } catch (error) {
-    Notification.error('Hata', 'Alanlar yüklenirken bir hata oluştu: ' + (await extractErrorMessage(error)), 5);
+    Notification.error('Error', 'An error occurred while loading fields: ' + (await extractErrorMessage(error)), 5);
   }
 }
 
@@ -310,7 +310,7 @@ async function openAiModal(uid) {
  * Show the main AI generation modal.
  */
 function showGenerationModal(uid, fields, cType) {
-  const modalTitle = 'AI İçerik Oluşturucu';
+  const modalTitle = 'AI Content Generator';
 
   // Build modal content
   const content = document.createElement('div');
@@ -325,13 +325,13 @@ function showGenerationModal(uid, fields, cType) {
   fieldHeader.innerHTML = SECTION_ICONS.fields;
   const fieldTitle = document.createElement('h4');
   fieldTitle.className = 'ai-section-title';
-  fieldTitle.textContent = 'Doldurulacak Alanlar';
+  fieldTitle.textContent = 'Fields to Fill';
   fieldHeader.appendChild(fieldTitle);
   fieldSection.appendChild(fieldHeader);
 
   const fieldDescription = document.createElement('p');
   fieldDescription.className = 'ai-section-desc';
-  fieldDescription.textContent = 'AI\'ın doldurmasını istediğiniz alanları seçin:';
+  fieldDescription.textContent = 'Select the fields you want AI to fill:';
   fieldSection.appendChild(fieldDescription);
 
   const fieldList = document.createElement('div');
@@ -363,11 +363,11 @@ function showGenerationModal(uid, fields, cType) {
     const meta = document.createElement('span');
     meta.className = 'ai-field-badge';
     if (field.kind === 'select') {
-      meta.textContent = 'Seçim listesi';
+      meta.textContent = 'Select list';
     } else if (field.kind === 'collection') {
-      meta.textContent = `${field.minItems}-${field.maxItems} kayıt`;
+      meta.textContent = `${field.minItems}-${field.maxItems} records`;
     } else if (field.kind === 'image') {
-      meta.textContent = 'AI Görsel';
+      meta.textContent = 'AI Image';
     } else {
       meta.textContent = field.type;
     }
@@ -391,19 +391,19 @@ function showGenerationModal(uid, fields, cType) {
   promptHeader.innerHTML = SECTION_ICONS.prompt;
   const promptTitle = document.createElement('h4');
   promptTitle.className = 'ai-section-title';
-  promptTitle.textContent = 'İçerik Talimatı';
+  promptTitle.textContent = 'Content Instruction';
   promptHeader.appendChild(promptTitle);
   promptSection.appendChild(promptHeader);
 
   const promptDesc = document.createElement('p');
   promptDesc.className = 'ai-section-desc';
-  promptDesc.textContent = 'Oluşturmak istediğiniz içerik hakkında bilgi verin:';
+  promptDesc.textContent = 'Describe the content you want to generate:';
   promptSection.appendChild(promptDesc);
 
   const promptInput = document.createElement('textarea');
   promptInput.className = 'ai-prompt-input';
   promptInput.rows = 4;
-  promptInput.placeholder = 'Örn: Bu ürün için ikna edici bir tanıtım metni yaz. Hedef kitle: küçük ve orta ölçekli işletmeler.';
+  promptInput.placeholder = 'E.g.: Write a compelling promotional text for this product. Target audience: small and medium-sized businesses.';
   promptSection.appendChild(promptInput);
 
   content.appendChild(promptSection);
@@ -417,13 +417,13 @@ function showGenerationModal(uid, fields, cType) {
   resultsHeader.innerHTML = SECTION_ICONS.results;
   const resultsTitle = document.createElement('h4');
   resultsTitle.className = 'ai-section-title';
-  resultsTitle.textContent = 'Oluşturulan İçerik';
+  resultsTitle.textContent = 'Generated Content';
   resultsHeader.appendChild(resultsTitle);
   resultsSection.appendChild(resultsHeader);
 
   const resultsDesc = document.createElement('p');
   resultsDesc.className = 'ai-section-desc';
-  resultsDesc.textContent = 'İçeriği düzenleyebilirsiniz. "Doldur" butonuna basınca kaydedilecek.';
+  resultsDesc.textContent = 'You can edit the content. It will be saved when you press "Fill".';
   resultsSection.appendChild(resultsDesc);
 
   const resultsContainer = document.createElement('div');
@@ -439,14 +439,14 @@ function showGenerationModal(uid, fields, cType) {
     size: Modal.sizes.large,
     buttons: [
       {
-        text: 'İçeriği Oluştur',
+        text: 'Generate Content',
         name: 'generate',
         icon: BUTTON_ICON,
         btnClass: 'btn-primary',
         trigger: () => onGenerateClick(modal, uid, fields, fieldList, promptInput, resultsSection, resultsContainer),
       },
       {
-        text: 'Doldur',
+        text: 'Fill',
         name: 'fill',
         icon: 'actions-save',
         btnClass: 'btn-success',
@@ -454,7 +454,7 @@ function showGenerationModal(uid, fields, cType) {
         trigger: () => onFillClick(modal, uid, resultsContainer),
       },
       {
-        text: 'Kapat',
+        text: 'Close',
         name: 'close',
         icon: 'actions-close',
         btnClass: 'btn-default',
@@ -475,7 +475,7 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
   const prompt = promptInput.value.trim();
 
   if (!prompt) {
-    Notification.warning('Uyarı', 'Lütfen bir içerik talimatı girin.', 3);
+    Notification.warning('Warning', 'Please enter a content instruction.', 3);
     return;
   }
 
@@ -489,7 +489,7 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
   });
 
   if (selectedFields.length === 0) {
-    Notification.warning('Uyarı', 'En az bir alan seçin.', 3);
+    Notification.warning('Warning', 'Select at least one field.', 3);
     return;
   }
 
@@ -500,15 +500,15 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
   const generateBtn = modal.querySelector('[name="generate"]');
   if (generateBtn) {
     generateBtn.setAttribute('disabled', 'disabled');
-    generateBtn.innerHTML = '<typo3-backend-spinner size="small"></typo3-backend-spinner> Oluşturuluyor...';
+    generateBtn.innerHTML = '<typo3-backend-spinner size="small"></typo3-backend-spinner> Generating...';
   }
 
   // Visible for as long as generation takes (image models can take well over
   // a minute) — the toast notifications alone are too easy to miss.
   resultsSection.classList.remove('is-hidden');
-  resultsContainer.innerHTML = renderLoadingState('İçerik AI ile oluşturuluyor...');
+  resultsContainer.innerHTML = renderLoadingState('Generating content with AI...');
 
-  Notification.info('AI', 'İçerik AI ile oluşturuluyor...', 3);
+  Notification.info('AI', 'Generating content with AI...', 3);
 
   try {
     let generated = {};
@@ -523,7 +523,7 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
       const data = await response.resolve();
 
       if (data.error) {
-        Notification.error('Hata', data.error, 8);
+        Notification.error('Error', data.error, 8);
         resultsSection.classList.add('is-hidden');
         resultsContainer.innerHTML = '';
         return;
@@ -535,8 +535,8 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
     // server-side and comes back as { fileUid, publicUrl, fileName }. A failing
     // image must not discard the text results or the remaining images.
     for (const field of imageFields) {
-      Notification.info('AI', `"${field.label}" için görsel oluşturuluyor...`, 3);
-      resultsContainer.innerHTML = renderLoadingState(`"${field.label}" için görsel oluşturuluyor... (bu işlem biraz sürebilir)`);
+      Notification.info('AI', `Generating image for "${field.label}"...`, 3);
+      resultsContainer.innerHTML = renderLoadingState(`Generating image for "${field.label}"... (this may take a while)`);
       try {
         const imageResponse = await new AjaxRequest(TYPO3.settings.ajaxUrls.ai_content_generator_generate_image)
           .post({
@@ -547,12 +547,12 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
         const imageData = await imageResponse.resolve();
 
         if (imageData.error) {
-          Notification.error('Hata', `"${field.label}" görseli oluşturulamadı: ${imageData.error}`, 8);
+          Notification.error('Error', `Failed to generate image for "${field.label}": ${imageData.error}`, 8);
           continue;
         }
         generated[field.name] = imageData;
       } catch (error) {
-        Notification.error('Hata', `"${field.label}" görseli oluşturulamadı: ` + (await extractErrorMessage(error)), 8);
+        Notification.error('Error', `Failed to generate image for "${field.label}": ` + (await extractErrorMessage(error)), 8);
       }
     }
 
@@ -567,9 +567,9 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
       fillBtn.classList.remove('disabled');
     }
 
-    Notification.success('Başarılı', 'İçerik oluşturuldu! Düzenleyip "Doldur" butonuna basabilirsiniz.', 4);
+    Notification.success('Success', 'Content generated! You can edit it and press "Fill".', 4);
   } catch (error) {
-    Notification.error('Hata', 'İçerik oluşturulurken bir hata oluştu: ' + (await extractErrorMessage(error)), 8);
+    Notification.error('Error', 'An error occurred while generating content: ' + (await extractErrorMessage(error)), 8);
     resultsSection.classList.add('is-hidden');
     resultsContainer.innerHTML = '';
   } finally {
@@ -577,7 +577,7 @@ async function onGenerateClick(modal, uid, fields, fieldList, promptInput, resul
     if (generateBtn) {
       generateBtn.removeAttribute('disabled');
       Icons.getIcon(BUTTON_ICON, Icons.sizes.small).then((icon) => {
-        generateBtn.innerHTML = icon + ' İçeriği Oluştur';
+        generateBtn.innerHTML = icon + ' Generate Content';
       });
     }
   }
@@ -620,7 +620,7 @@ function displayResults(container, generated, fields) {
       } else {
         const failed = document.createElement('span');
         failed.className = 'ai-image-caption';
-        failed.textContent = 'Görsel oluşturulamadı.';
+        failed.textContent = 'Image generation failed.';
         preview.appendChild(failed);
       }
 
@@ -653,7 +653,7 @@ function displayResults(container, generated, fields) {
 
         const itemTitle = document.createElement('div');
         itemTitle.className = 'ai-collection-item-title';
-        itemTitle.textContent = `Kayıt ${index + 1}`;
+        itemTitle.textContent = `Record ${index + 1}`;
         itemCard.appendChild(itemTitle);
 
         (field.itemFields || []).forEach((subField) => {
@@ -747,17 +747,17 @@ async function onFillClick(modal, uid, resultsContainer) {
   });
 
   if (Object.keys(data).length === 0 && Object.keys(collections).length === 0 && Object.keys(images).length === 0) {
-    Notification.warning('Uyarı', 'Kaydedilecek veri bulunamadı.', 3);
+    Notification.warning('Warning', 'No data found to save.', 3);
     return;
   }
 
   const fillBtn = modal.querySelector('[name="fill"]');
   if (fillBtn) {
     fillBtn.setAttribute('disabled', 'disabled');
-    fillBtn.innerHTML = '<typo3-backend-spinner size="small"></typo3-backend-spinner> Kaydediliyor...';
+    fillBtn.innerHTML = '<typo3-backend-spinner size="small"></typo3-backend-spinner> Saving...';
   }
 
-  Notification.info('Kaydediliyor', 'İçerik kaydediliyor...', 3);
+  Notification.info('Saving', 'Saving content...', 3);
 
   try {
     const response = await new AjaxRequest(TYPO3.settings.ajaxUrls.ai_content_generator_save)
@@ -771,11 +771,11 @@ async function onFillClick(modal, uid, resultsContainer) {
     const result = await response.resolve();
 
     if (result.error) {
-      Notification.error('Hata', result.error, 8);
+      Notification.error('Error', result.error, 8);
       return;
     }
 
-    Notification.success('Başarılı', 'İçerik kaydedildi! Sayfa yenileniyor...', 3);
+    Notification.success('Success', 'Content saved! Reloading page...', 3);
     Modal.dismiss();
 
     // Reload the page module to show the updated content
@@ -783,12 +783,12 @@ async function onFillClick(modal, uid, resultsContainer) {
       window.location.reload();
     }, 1000);
   } catch (error) {
-    Notification.error('Hata', 'Kaydetme sırasında bir hata oluştu: ' + (await extractErrorMessage(error)), 8);
+    Notification.error('Error', 'An error occurred while saving: ' + (await extractErrorMessage(error)), 8);
   } finally {
     if (fillBtn) {
       fillBtn.removeAttribute('disabled');
       Icons.getIcon('actions-save', Icons.sizes.small).then((icon) => {
-        fillBtn.innerHTML = icon + ' Doldur';
+        fillBtn.innerHTML = icon + ' Fill';
       });
     }
   }

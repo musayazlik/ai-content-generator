@@ -1,20 +1,49 @@
-# Kurulum (Composer Mode)
+# Installation (Composer Mode)
 
-Bu paket, Composer ile yönetilen bir TYPO3 v14 kurulumu için hazırlanmıştır (klasik `typo3conf/ext/` kurulumu için değil).
+This package is intended for a Composer-managed TYPO3 v14 installation (not the classic `typo3conf/ext/` install).
 
-## 1. Paketi yerleştirin
+## Option A — Via Git (recommended, one command after initial setup)
 
-Zip içeriğini TYPO3 projenizin içinde bir klasöre çıkarın, örneğin:
+The package is published at [github.com/musayazlik/ai-content-generator](https://github.com/musayazlik/ai-content-generator) (public repository).
+
+Add this to your project's **root** `composer.json`:
+
+```json
+"repositories": [
+  {
+    "type": "vcs",
+    "url": "https://github.com/musayazlik/ai-content-generator.git"
+  }
+]
+```
+
+Then install with a single command:
+
+```bash
+composer require musayazlik/ai-content-generator
+```
+
+Since the repository is public, no authentication token is required. To update to a newer release later:
+
+```bash
+composer update musayazlik/ai-content-generator
+```
+
+## Option B — From a local zip (offline / path repository)
+
+## 1. Place the package
+
+Extract the zip contents into a folder inside your TYPO3 project, e.g.:
 
 ```
 your-typo3-project/
   packages/
-    ai_content_generator/   <- zip içeriği buraya
+    ai_content_generator/   <- zip contents go here
 ```
 
-## 2. Path repository ekleyin
+## 2. Add a path repository
 
-Projenizin **kök** `composer.json` dosyasına aşağıdaki `repositories` girdisini ekleyin (yoksa oluşturun):
+Add the following `repositories` entry to your project's **root** `composer.json` (create the key if it doesn't exist yet):
 
 ```json
 "repositories": [
@@ -25,9 +54,9 @@ Projenizin **kök** `composer.json` dosyasına aşağıdaki `repositories` girdi
 ]
 ```
 
-## 3. Bağımlılığı ekleyin
+## 3. Add the dependency
 
-Aynı `composer.json`'ın `require` bölümüne:
+In the same `composer.json`, under `require`:
 
 ```json
 "require": {
@@ -35,30 +64,30 @@ Aynı `composer.json`'ın `require` bölümüne:
 }
 ```
 
-## 4. Kurulumu çalıştırın
+## 4. Run the install
 
 ```bash
 composer update musayazlik/ai-content-generator
 ```
 
-Bu komut `vendor/musayazlik/ai-content-generator` sembolik bağlantısını oluşturur ve autoload haritasını günceller.
+This creates the `vendor/musayazlik/ai-content-generator` symlink and updates the autoload map.
 
-## 5. Extension'ı aktive edin
+## Activate the extension
 
-TYPO3 Backend → **Admin Tools > Extensions** → listede **"AI Content Generator"**'ı bulup **Activate** (etkinleştir) butonuna basın.
+TYPO3 Backend → **Admin Tools > Extensions** → find **"AI Content Generator"** in the list → click **Activate**.
 
-## 6. API ayarlarını yapın
+## Configure API settings
 
-Backend sol menüde **System > AI Content Generator** modülüne girip:
-- **Text Generation**: API key, model, endpoint (OpenAI/OpenRouter/Ollama uyumlu)
-- **Image Generation**: ayrı API key, model, endpoint (görsel üretimi için)
+In the backend, go to **System > AI Content Generator** and fill in:
+- **Text Generation**: API key, model, endpoint (OpenAI/OpenRouter/Ollama compatible)
+- **Image Generation**: separate API key, model, endpoint (for image generation)
 
-bilgilerini girip **Save Settings**'e basın. Üretilen görseller `fileadmin/ai_generated/` klasörüne kaydedilir.
+Then click **Save Settings**. Generated images are stored in the `fileadmin/ai_generated/` folder.
 
-## Gereksinimler
+## Requirements
 
-- TYPO3 14.3 veya üzeri
-- PHP 8.2 veya üzeri
-- Composer mode kurulum (composer-managed TYPO3)
+- TYPO3 14.3 or higher
+- PHP 8.2 or higher
+- A Composer-managed TYPO3 installation
 
-Ekstra bir üçüncü parti bağımlılık gerekmez — Guzzle dahil tüm ihtiyaçlar TYPO3 core üzerinden gelir.
+No additional third-party dependencies are required — everything (including Guzzle) comes from TYPO3 core.

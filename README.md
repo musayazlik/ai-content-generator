@@ -1,110 +1,110 @@
 # AI Content Generator for TYPO3 v14
 
-AI destekli içerik oluşturucu extension. TYPO3 v14 page module'deki her içerik elementine bir "AI" butonu ekler. Butona tıklandığında, elementin alanlarını listeleyen bir dialog açılır ve kullanıcı metin girerek AI ile içerik (metin ve görsel) oluşturabilir.
+AI-powered content generator extension for TYPO3 v14. Adds an "AI" button to every content element in the page module. Clicking it opens a dialog listing the element's fields, where you can enter a prompt and generate content (text and images) with AI.
 
-## Özellikler
+## Features
 
-- **Tüm içerik elementlerinde çalışır** — Core ve custom (Content Blocks dahil) elementler
-- **Otomatik alan tespiti** — TCA'den elementin CType'ına göre alanları otomatik listeler (text, select, collection/inline, image/file alanları)
-- **Metin üretimi** — OpenAI (veya uyumlu: OpenRouter, Ollama) API ile metin alanları için içerik oluşturur
-- **Görsel üretimi** — Ayrı API bilgileriyle (farklı sağlayıcı da olabilir) görsel oluşturur ve `fileadmin/ai_generated/` klasörüne kaydeder
-- **Düzenlenebilir sonuçlar** — Oluşturulan içeriği kaydetmeden önce düzenleyebilirsiniz
-- **DataHandler ile kayıt** — TYPO3 DataHandler kullanarak güvenli kayıt yapar
+- **Works with all content elements** — core elements and custom ones (including Content Blocks)
+- **Automatic field detection** — lists fields based on the element's CType from TCA (text, select, collection/inline, image/file fields)
+- **Text generation** — generates content for text fields via an OpenAI-compatible API (OpenAI, OpenRouter, Ollama, ...)
+- **Image generation** — generates images with separate (optionally different provider) credentials and stores them in `fileadmin/ai_generated/`
+- **Editable results** — review and edit generated content before saving
+- **Safe saving** — writes changes via the TYPO3 DataHandler
 
-## Kurulum
+## Installation
 
-Composer-mode kurulum için detaylı adımlar **[INSTALL.md](INSTALL.md)** dosyasında. Özetle:
+See **[INSTALL.md](INSTALL.md)** for detailed composer-mode installation steps. In short:
 
 ```bash
 composer require musayazlik/ai-content-generator
 ```
 
-(Private/path repository üzerinden dağıtılıyorsa `INSTALL.md`'deki path repository adımlarını izleyin.)
+(If distributed via a private VCS/path repository, follow the repository setup steps in `INSTALL.md` first.)
 
-### Konfigürasyon
+### Configuration
 
-1. Backend sol menüde **System > AI Content Generator** modülüne gidin
-2. **Text Generation** bölümünde: API Key, Model, API Endpoint, System Prompt
-3. **Image Generation** bölümünde (ayrı, isteğe bağlı): API Key, Model, API Endpoint, Image Size
-4. **Save Settings** ile kaydedin
+1. In the backend, go to **System > AI Content Generator**
+2. **Text Generation** section: API Key, Model, API Endpoint, System Prompt
+3. **Image Generation** section (separate, optional): API Key, Model, API Endpoint, Image Size
+4. Click **Save Settings**
 
-## Kullanım
+## Usage
 
-1. **Web > Page** modülüne gidin
-2. Herhangi bir içerik elementinin header'ında **AI** butonunu göreceksiniz
-3. Butona tıklayın
-4. Açılan dialog'da:
-   - Doldurmak istediğiniz alanları seçin (metin, seçim listesi, koleksiyon, görsel)
-   - İçerik talimatınızı yazın (örn: "Ürünümüz hakkında ikna edici bir tanıtım metni yaz")
-   - **"İçeriği Oluştur"** butonuna tıklayın
-5. AI oluşturulan içeriği (ve varsa görselleri) her alan için gösterecek
-6. İçeriği düzenleyin (opsiyonel)
-7. **"Doldur"** butonuna tıklayın — içerik kaydedilir ve sayfa yenilenir
+1. Go to the **Web > Page** module
+2. You'll see an **AI** button in the header of every content element
+3. Click it
+4. In the dialog that opens:
+   - Select the fields you want filled (text, select, collection, image)
+   - Write your content instruction (e.g. "Write a compelling promotional text for our product")
+   - Click **Generate Content**
+5. AI shows the generated content (and any images) for each field
+6. Edit the content if needed (optional)
+7. Click **Fill** — the content is saved and the page reloads
 
-## Mimari
+## Architecture
 
 ```
 ai_content_generator/
 ├── Classes/
 │   ├── Backend/Form/Element/
-│   │   └── AiContentGeneratorElement.php       # Edit form'daki AI sekmesi/butonu
+│   │   └── AiContentGeneratorElement.php       # AI tab/button in the record edit form
 │   ├── Controller/
-│   │   ├── AiContentGeneratorController.php    # AJAX endpoint'ler (getFields, generate, generateImage, save)
-│   │   └── SettingsModuleController.php        # Ayarlar modülü controller'ı
+│   │   ├── AiContentGeneratorController.php    # AJAX endpoints (getFields, generate, generateImage, save)
+│   │   └── SettingsModuleController.php        # Settings module controller
 │   ├── Service/
-│   │   ├── AiService.php                       # Metin + görsel API entegrasyonu
-│   │   └── SettingsService.php                 # Ayarları sys_registry'de saklar
+│   │   ├── AiService.php                       # Text + image API integration
+│   │   └── SettingsService.php                 # Stores settings in sys_registry
 │   └── EventListener/
-│       └── PageLayoutAssetsEventListener.php   # Page module'e JS/CSS enjekte eder
+│       └── PageLayoutAssetsEventListener.php   # Injects JS/CSS into the page module
 ├── Configuration/
 │   ├── Backend/
-│   │   ├── AjaxRoutes.php                      # AJAX route tanımları
-│   │   └── Modules.php                         # Ayarlar modülü kaydı
+│   │   ├── AjaxRoutes.php                      # AJAX route definitions
+│   │   └── Modules.php                         # Settings module registration
 │   ├── TCA/Overrides/tt_content.php
-│   ├── Icons.php                               # Modül ikonu (Configuration kökünde olmalı!)
-│   ├── JavaScriptModules.php                   # JS importmap (Configuration kökünde olmalı!)
+│   ├── Icons.php                               # Module icon (must live at the Configuration root!)
+│   ├── JavaScriptModules.php                   # JS importmap (must live at the Configuration root!)
 │   └── Services.yaml                           # Dependency injection
 ├── Resources/
 │   ├── Private/
 │   │   ├── Language/locallang.xlf, locallang_mod.xlf
 │   │   └── Templates/SettingsModule/Index.html
 │   └── Public/
-│       ├── JavaScript/ai-content-generator.js  # Ana JS modülü (buton + modal)
-│       ├── Css/ai-content-generator.css        # Stiller (backend temasına uyumlu)
-│       └── Icons/Extension.svg                 # Extension ikonu
+│       ├── JavaScript/ai-content-generator.js  # Main JS module (button + modal)
+│       ├── Css/ai-content-generator.css        # Styles (follows the backend theme)
+│       └── Icons/Extension.svg                 # Extension icon
 ├── composer.json
-├── ext_localconf.php                           # FormEngine node kaydı
+├── ext_localconf.php                           # FormEngine node registration
 ├── ext_emconf.php                              # TER metadata
-└── INSTALL.md                                  # Composer-mode kurulum rehberi
+└── INSTALL.md                                  # Composer-mode installation guide
 ```
 
-## AJAX Endpoint'leri
+## AJAX Endpoints
 
-| Route | Açıklama |
-|-------|----------|
-| `/ai-content-generator/get-fields` | Verilen UID için içerik elementinin alanlarını döndürür |
-| `/ai-content-generator/generate` | AI API'sini çağırarak metin/seçim/koleksiyon alanları için içerik oluşturur |
-| `/ai-content-generator/generate-image` | Görsel API'sini çağırarak görsel üretir, fileadmin'e kaydeder |
-| `/ai-content-generator/save` | Oluşturulan içeriği (ve görsel referanslarını) DataHandler ile kaydeder |
+| Route | Description |
+|-------|-------------|
+| `/ai-content-generator/get-fields` | Returns the fields of the content element for a given UID |
+| `/ai-content-generator/generate` | Calls the AI API to generate content for text/select/collection fields |
+| `/ai-content-generator/generate-image` | Calls the image API to generate an image and stores it in fileadmin |
+| `/ai-content-generator/save` | Saves the generated content (and image references) via DataHandler |
 
-## Gereksinimler
+## Requirements
 
 - TYPO3 v14.3+
 - PHP 8.2+
-- OpenAI uyumlu bir metin API'si (zorunlu), görsel üretimi için ayrı bir görsel API'si (opsiyonel)
+- An OpenAI-compatible text API (required); a separate image API for image generation (optional)
 
-## AI Sağlayıcı Örnekleri
+## AI Provider Examples
 
-**Metin üretimi:**
+**Text generation:**
 - **OpenAI**: `https://api.openai.com/v1/chat/completions` + `gpt-4o-mini`
-- **OpenRouter**: `https://openrouter.ai/api/v1/chat/completions` + istediğiniz model
+- **OpenRouter**: `https://openrouter.ai/api/v1/chat/completions` + any model of your choice
 - **Ollama (local)**: `http://localhost:11434/v1/chat/completions` + `llama3`
 
-**Görsel üretimi:**
+**Image generation:**
 - **OpenAI**: `https://api.openai.com/v1/images/generations` + `gpt-image-1` / `dall-e-3`
 - **OpenRouter**: `https://openrouter.ai/api/v1/images` + `openai/gpt-image-1` / `google/gemini-2.5-flash-image`
 
-## Geliştirici
+## Author
 
 **Musa Yazlık**
-- E-posta: info@musayazlik.com
+- Email: info@musayazlik.com

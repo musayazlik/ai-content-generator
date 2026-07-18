@@ -35,14 +35,14 @@ class AiContentGeneratorElement extends AbstractFormElement
         $cType = is_array($rawCType) ? (string)($rawCType[0] ?? '') : (string)$rawCType;
 
         if ($uid === 0) {
-            $result['html'] = '<div class="alert alert-info">Kayıt kaydedildikten sonra AI ile içerik oluşturabilirsiniz.</div>';
+            $result['html'] = '<div class="alert alert-info">You can generate content with AI after the record has been saved.</div>';
             return $result;
         }
 
         $result['html'] = <<<HTML
 <div class="ai-form-tab-wrapper" style="padding: 12px 0;">
     <p class="ai-form-tab-description" style="margin-bottom: 12px; color: #666; font-size: 13px;">
-        AI ile bu içerik elementinin alanlarını otomatik doldurun. Aşağıdaki butona tıklayın, alanları seçin ve prompt'unuzu yazın.
+        Automatically fill this content element's fields with AI. Click the button below, select the fields, and write your prompt.
     </p>
     <button
         type="button"
@@ -54,7 +54,7 @@ class AiContentGeneratorElement extends AbstractFormElement
         <span class="t3js-icon" aria-hidden="true">
             <typo3-backend-icon identifier="actions-wand-sparkles" size="small"></typo3-backend-icon>
         </span>
-        AI ile İçerik Oluştur
+        Generate Content with AI
     </button>
 </div>
 HTML;
